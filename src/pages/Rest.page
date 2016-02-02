@@ -1,0 +1,6 @@
+<apex:page id="Rest" controller="RestController">
+    <apex:repeat value="{!usrList}" var="usr">
+        <apex:outputText value="{!usr.id}" />
+        <apex:outputText value="{!usr.name}" />
+    </apex:repeat>
+</apex:page>

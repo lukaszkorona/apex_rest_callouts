@@ -1,0 +1,19 @@
+<apex:page id="SmallPost" controller="SmallPostController">
+    <apex:pageBlock >
+        <table>
+            <apex:repeat value="{!userResponse}" var="usr">
+                <tr>
+                    <td><apex:outputText value="{!usr.id}" /></td>
+                    <td><apex:outputText value="{!usr.name}" /></td>
+                    <td><apex:outputText value="{!usr.username}" /></td>
+                    <td><apex:outputText value="{!usr.address.street}" /></td>
+                    <td><apex:outputText value="{!usr.company.name}" /></td>
+                    <td><apex:outputText value="{!usr.address.geo.lat}" /></td>
+                    <td><apex:outputText value="{!usr.address.geo.lng}" /></td>
+                </tr>
+            </apex:repeat>
+        </table>
+
+
+    </apex:pageBlock>
+</apex:page>
