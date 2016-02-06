@@ -1,0 +1,67 @@
+<apex:page id="ProductView" controller="ProductController">
+    <apex:outputLink value="/apex/ProductView">Back to List view</apex:outputLink>
+    <apex:pageBlock id="shoppingCart" rendered="{!cart != null}">
+        <table>
+            <apex:form>
+                <apex:commandLink action="{!deleteCart}" value="delete" />
+            </apex:form>
+            <apex:repeat value="{!cart.scList}" var="sc">
+                <tr>
+                    <td><apex:outputText value="{!prodMap[sc.Product_Id__c].name}" /></td>
+                    <td><apex:outputText value="{!sc.Quantity__c}" /></td>
+                </tr>
+
+
+            </apex:repeat>
+        </table>
+    </apex:pageBlock>
+    <apex:pageBlock id="productList">
+        <apex:pageBlockSection columns="2">
+            <apex:outputLabel value="Product Id" for="productId"/>
+            <apex:outputLabel value="Product Name" for="productName"/>
+            <apex:repeat value="{!prodMap}" var="key">
+
+
+                    <apex:outputText value="{!prodMap[key].id}" />
+
+
+                    <apex:outputLink value="/apex/ProductView?productId={!prodMap[key].id}" id="productName">{!prodMap[key].name}</apex:outputLink>
+
+            </apex:repeat>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+    <apex:pageBlock rendered="{!prod.id != null}">
+        <apex:pageBlockSection  id="productDetails" >
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel for="productId" value="Product Id"/>
+                <apex:outputText value="{!prod.id}" id="productId"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel for="productName" value="Product Name"/>
+                <apex:outputText value="{!prod.name}" id="productName"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel for="productQuantityAvailable" value="Quantity available"/>
+                <apex:outputText value="{!prod.quantity_available}" id="productQuantityAvailable"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel for="productCategories" value="Categories"/>
+                <apex:panelGrid columns="1">
+                    <apex:repeat value="{!prod.categories}" var="cat" >
+                        <apex:outputText value ="{!catMap[cat].name}, " />
+                    </apex:repeat>
+                </apex:panelGrid>
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel for="productPrice" value="Price"/>
+                <apex:outputText value="{!prod.price}" id="productPrice"/>
+            </apex:pageBlockSectionItem>
+            <apex:form>
+                <apex:inputText value="{!quantityOrder}" />
+                <apex:commandButton action="{!addToCart}" value="Add to cart"/>
+            </apex:form>
+        </apex:pageBlockSection>
+
+    </apex:pageBlock>
+</apex:page>
