@@ -4,107 +4,153 @@
 
 public with sharing class RestController {
 
+    public static final String SERVICE_URL = 'http://178.62.161.194:8082';
+    public static final String PRODUCT_ENDPOINT = '/product/';
+    public static final String CATEGORY_ENDPOINT = '/categories/';
+    public static final String ORDER_ENDPOINT = '/order/';
+    public static final String GET_METHOD = 'GET';
+    public static final String POST_METHOD = 'POST';
+    private static String username = 'user7';
+    private static String passsword = '3T5erA49';
 
-    public static String SERVICE_URL = 'http://jsonplaceholder.typicode.com';
-    public static String POSTS_ENDPOINT = '/posts';
-    public static String USERS_ENPOINT = '/users';
-    public List<User> usrList {get;set;}
 
-    public RestController()
-    {
-        List<user> uList = new List<user>();
-        uList = getUsers();
-    }
+    public RestController(){}
 
-    public static List<SmallPost> getPosts() {
-        HttpRequest req = new HttpRequest();
-
-        HTTPResponse res;
-        req.setMethod('GET');
-
-        req.setEndpoint(SERVICE_URL+POSTS_ENDPOINT);
-
-        Http http = new http();
+    public static Map<String, RestController.Product> getProducts() {
+//        String restResponse = '[{"id":4,"name":"ECG Hoodie L"},{"id":3,"name":"ECG Hoodie M"},{"id":1,"name":"ECG Hoodie S"},{"id":7,"name":"ECG Sweater L"},{"id":6,"name":"ECG Sweater M"},{"id":5,"name":"ECG Sweater S"},{"id":2,"name":"Salesforce Sweets"}]';
         try {
-            res = http.send(req);
-            System.debug('res '+res);
-
-            //System.debug(res.getBody());
-        } catch (System.CalloutException e) {
-            System.debug(e);
-        }
-        String jsonString = res.getBody();
-        List<SmallPost> spList = new List<SmallPost>();
-        //spList = (SmallPost)JSON.deserialize(jsonString, SmallPost.class);
-        /*if (jsonString != null) {
-            System.debug('json string');
-            JSONParser parser = JSON.createParser(jsonString);
-            while(parser.nextToken() != null) {
-                if (parser.getCurrentToken() == JSONToken.START_ARRAY) {
-                    System.debug('start array');
-                    while(parser.nextToken() != null) {
-                        if (parser.getCurrentToken() == JSONToken.START_OBJECT) {
-                            System.debug('inner most');
-                            SmallPost sp = (SmallPost) parser.readValueAs(SmallPost.class);
-                            System.debug('sp ' + sp);
-                            spList.add(sp);
-                        }
-                    }
-                }
+            RestControllerContext ctx = new RestControllerContext(RestController.GET_METHOD, RestController.PRODUCT_ENDPOINT);
+            String restResponse = ctx.send();
+            List<RestController.Product> productList = (List<RestController.Product>)JSON.deserialize(restResponse, List<RestController.Product>.class);
+            Map<String, RestController.Product> productMap = new Map<String, RestController.Product>();
+            for(RestController.Product prod : productList) {
+                productMap.put(prod.id, prod);
             }
-        }*/
-        System.debug('spList '+spList);
-        return spList;
-    }
-
-    public static void getProducts() {
-        String productsRes = '[{"id": 1, "name": "Product1"}, {"id": 2, "name": "Product2"}]';
-        List<Product> products = (List<Product>)JSON.deserialize(productsRes, List<RestController.Product>.class);
-        System.debug('products '+products);
-    }
-
-    public static void getProduct() {
-        String productRes = '{"id": 1, "name": "Product Name","quantity_available": 555,"categories": [1,2,3],"price": 15.25}';
-        Product product = (Product)JSON.deserialize(productRes, RestController.Product.class);
-        System.debug('product '+product);
-    }
-
-    public static void getCategories() {
-        String categoriesRes = '[{ "id": 1, "name": "Clothing", "parent_id": null }, { "id": 2, "name": "Keyboards", "parent_id": null }, { "id": 3, "name": "Hoodies", "parent_id": 1}]';
-    }
-
-    public static void getOrder() {
-        String orderRes = '{ "id": 1, "status": 0,  "tracking_code": "ABCDEF","timestamp": 1453373251465,"total_price": 19.98,"user_id": "005xxxxx","products":[{"id":20,"product_id": 1,"quantity": 2,"unitprice": 9.99}]}';
-    }
-
-    public List<User> getUsers() {
-        HttpRequest req = new HttpRequest();
-        HttpResponse res;
-        req.setMethod('GET');
-        String endpoint = SERVICE_URL+USERS_ENPOINT;
-
-        req.setEndpoint(endpoint);
-        Http http = new http();
-        try {
-            res = http.send(req);
-            System.debug(res);
-            System.debug(res.getBody());
-        } catch (System.CalloutException e) {
-            System.debug(e);
-        }
-
-        List<User> deserializedResult;
-        try {
-            //Type resultType = Type.forName('RestController.User');
-            //System.debug('resultType '+resultType);
-            deserializedResult = (List<RestController.User>)JSON.deserialize(res.getBody(), List<RestController.User>.class);
+            return productMap;
         }catch(Exception e) {
             System.debug(e);
+            throw e;
+        }
+    }
+
+
+    public static RestController.Product getProduct(String Id) {
+//        String restResponse = '{"id": 1, "name": "Product Name","quantity_available": 555,"categories": [1,2,3],"price": 15.25}';
+        try {
+            RestControllerContext ctx = new RestControllerContext(RestController.GET_METHOD, RestController.PRODUCT_ENDPOINT + Id);
+            String restResponse = ctx.send();
+            RestController.Product product = (RestController.Product)JSON.deserialize(restResponse, RestController.Product.class);
+            System.debug('product '+product.id);
+            return product;
+        }catch(Exception e) {
+            System.debug(e);
+            throw e;
+        }
+    }
+
+    public static Map<String, RestController.Category> getCategories() {
+//        String restResponse = '[{"id":1,"name":"Clothing","parent_id":null},{"id":2,"name":"Candy","parent_id":null},{"id":3,"name":"Hoodies","parent_id":1},{"id":4,"name":"Sweaters","parent_id":1}]';
+        try {
+            RestControllerContext ctx = new RestControllerContext(RestController.GET_METHOD, RestController.CATEGORY_ENDPOINT);
+            String restResponse = ctx.send();
+            List<RestController.Category> categoryList = (List<RestController.Category>)JSON.deserialize(restResponse, List<RestController.Category>.class);
+            Map<String, RestController.Category> catMap = new Map<String, RestController.Category>();
+            for(RestController.Category cat : categoryList) {
+                catMap.put(cat.id, cat);
+            }
+            return catMap;
+        }catch(Exception e) {
+            System.debug(e);
+            throw e;
+        }
+    }
+
+    public static Map<String, RestController.Order> getOrders() {
+//        String orderRes = '{ "id": 1, "status": 0,  "tracking_code": "ABCDEF","timestamp": 1453373251465,"total_price": 19.98,"user_id": "005xxxxx","products":[{"id":20,"product_id": 1,"quantity": 2,"unitprice": 9.99}]}';
+        try {
+            RestControllerContext ctx = new RestControllerContext(RestController.GET_METHOD, RestController.ORDER_ENDPOINT);
+            String restResponse = ctx.send();
+            List<RestController.Order> orderList = (List<RestController.Order>)JSON.deserialize(restResponse, List<RestController.Order>.class);
+            Map<String, RestController.Order> orderMap = new Map<String, RestController.Order>();
+            for(RestController.Order ord : orderList) {
+                orderMap.put(ord.id, ord);
+            }
+            return orderMap;
+        }catch(Exception e) {
+            System.debug(e);
+            throw e;
+        }
+    }
+
+    public static Order getOrder(String Id) {
+//        String restResponse = '{"id": 1, "name": "Order Name","quantity_available": 555,"categories": [1,2,3],"price": 15.25}';
+        try {
+            RestControllerContext ctx = new RestControllerContext(RestController.GET_METHOD, RestController.ORDER_ENDPOINT + Id);
+            String restResponse = ctx.send();
+            Order order = (Order)JSON.deserialize(restResponse, RestController.Order.class);
+            System.debug('order '+order);
+            return order;
+        }catch(Exception e) {
+            System.debug(e);
+            throw e;
+        }
+    }
+
+    public static Order sendOrder(Map<String, Object> orderBody) {
+        try {
+            RestControllerContext ctx = new RestControllerContext(orderBody);
+            String restResponse = ctx.send();
+            Order order = (Order)JSON.deserialize(restResponse, RestController.Order.class);
+            System.debug('order '+order);
+            return order;
+        }catch(Exception e) {
+            System.debug(e);
+            throw e;
+        }
+    }
+
+    public class RestControllerContext {
+        private HttpRequest req;
+        private HttpResponse res;
+        private Http http;
+        private Blob headerValue;
+        private String authHeader;
+
+        public RestControllerContext() {
+            req = new HttpRequest();
+            http = new http();
+            headerValue = Blob.valueOf(RestController.username + ':' + RestController.passsword);
+            authHeader = 'Basic ' + EncodingUtil.base64Encode(headerValue);
+            req.setHeader('Authorization', authHeader);
+            System.debug(req.getHeader('Authorization'));
         }
 
-        usrList = new List<user>();
-        usrList = deserializedResult;
-        return deserializedResult;
+        public RestControllerContext(String method, String endpointName) {
+            this();
+            req.setMethod(method);
+            req.setEndpoint(RestController.SERVICE_URL + endpointName);
+
+        }
+
+        public RestControllerContext(Map<String, Object> body) {
+            this();
+            req.setMethod(RestController.POST_METHOD);
+            req.setEndpoint(RestController.SERVICE_URL + ORDER_ENDPOINT);
+            String serializedBody = JSON.serialize(body);
+            req.setBody(serializedBody);
+        }
+
+        public String send() {
+            try {
+                System.debug('HttpRequest ' + req);
+                res = http.send(req);
+                System.debug('HttpResponse ' + res);
+
+            } catch (Exception e) {
+                System.debug(e);
+            }
+            return res.getBody();
+        }
     }
 
     public class Product
@@ -112,7 +158,7 @@ public with sharing class RestController {
         public String id {get;set;}
         public String name {get;set;}
         public String quantity_available {get;set;}
-        public List<Integer> categories {get;set;}
+        public List<String> categories {get;set;}
         public Decimal price {get;set;}
     }
 
@@ -126,58 +172,16 @@ public with sharing class RestController {
     public class Order
     {
         public String id {get;set;}
+        public String name {get;set;}
         public String status {get;set;}
         public String tracking_code {get;set;}
         public String timstamp {get;set;}
         public String total_price {get;set;}
         public String user_id {get;set;}
         public List<Product> products {get;set;}
+        public String product_id {get;set;}
+        public String quantity {get;set;}
+        public String unitprice {get;set;}
     }
 
-    public class UserResponse
-    {
-        public List<User> users {get;set;}
-    }
-
-    public class User
-    {
-        public String id {get;set;}
-        public String name {get;set;}
-        public String username {get;set;}
-        public String email {get;set;}
-        public Address address {get;set;}
-        public String phone {get;set;}
-        public String website {get;set;}
-        public Company company {get;set;}
-    }
-
-    public Class Company
-    {
-        public String name {get;set;}
-        public String catchPharse {get;set;}
-        public String bs {get;set;}
-    }
-
-    public class Address
-    {
-        public String street {get;set;}
-        public String suit {get;set;}
-        public String city {get;set;}
-        public String zipcode {get;set;}
-        public Geo geo {get;set;}
-    }
-
-    public Class Geo
-    {
-        public String lat {get;set;}
-        public String lng {get;set;}
-    }
-
-    public class SmallPost
-    {
-        public String userId {get;set;}
-        public String id {get;set;}
-        public String title {get;set;}
-        public String body {get;set;}
-    }
 }
