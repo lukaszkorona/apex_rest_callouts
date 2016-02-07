@@ -9,9 +9,6 @@
                 <apex:column headerValue="Quantity">
                     <apex:outputText value="{!sc.Quantity__c}" />
                 </apex:column>
-                <apex:column headerValue="Unit Price">
-                    <apex:outputText value="{!prodMap[sc.Product_Id__c].price}" />
-                </apex:column>
             </apex:pageBlockTable>
 
             <apex:form >
