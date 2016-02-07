@@ -1,37 +1,42 @@
 <apex:page id="ProductView" controller="ProductController">
-    <apex:outputLink value="/apex/ProductView">Back to List view</apex:outputLink>
-    <apex:pageBlock id="shoppingCart" rendered="{!cart != null}">
-        <table>
-            <apex:form>
-                <apex:commandLink action="{!deleteCart}" value="delete" />
+    <apex:pageMessages />
+    <apex:pageBlock id="shoppingCart" rendered="{!cart.size > 0}" title="Your shopping cart:">
+        <apex:pageBlockSection columns="3">
+            <apex:pageBlockTable value="{!cart.scList}" var="sc" >
+                <apex:column headerValue="Product Name">
+                    <apex:outputText value="{!prodMap[sc.Product_Id__c].name}" />
+                </apex:column>
+                <apex:column headerValue="Quantity">
+                    <apex:outputText value="{!sc.Quantity__c}" />
+                </apex:column>
+                <apex:column headerValue="Unit Price">
+                    <apex:outputText value="{!prodMap[sc.Product_Id__c].price}" />
+                </apex:column>
+            </apex:pageBlockTable>
+
+            <apex:form >
+                <apex:commandButton value="Checkout" action="{!cart.checkout}" />
             </apex:form>
-            <apex:repeat value="{!cart.scList}" var="sc">
-                <tr>
-                    <td><apex:outputText value="{!prodMap[sc.Product_Id__c].name}" /></td>
-                    <td><apex:outputText value="{!sc.Quantity__c}" /></td>
-                </tr>
+        </apex:pageBlockSection>
 
-
-            </apex:repeat>
-        </table>
     </apex:pageBlock>
     <apex:pageBlock id="productList">
         <apex:pageBlockSection columns="2">
-            <apex:outputLabel value="Product Id" for="productId"/>
-            <apex:outputLabel value="Product Name" for="productName"/>
-            <apex:repeat value="{!prodMap}" var="key">
-
-
+            <apex:pageBlockTable value="{!prodMap}" var="key">
+                <apex:column headerValue="Product Id">
                     <apex:outputText value="{!prodMap[key].id}" />
-
-
+                </apex:column>
+                <apex:column headerValue="Product Name">
                     <apex:outputLink value="/apex/ProductView?productId={!prodMap[key].id}" id="productName">{!prodMap[key].name}</apex:outputLink>
-
-            </apex:repeat>
+                </apex:column>
+            </apex:pageBlockTable>
         </apex:pageBlockSection>
+
+
     </apex:pageBlock>
     <apex:pageBlock rendered="{!prod.id != null}">
         <apex:pageBlockSection  id="productDetails" >
+
             <apex:pageBlockSectionItem >
                 <apex:outputLabel for="productId" value="Product Id"/>
                 <apex:outputText value="{!prod.id}" id="productId"/>

@@ -1,23 +1,19 @@
-/**
- * Created by koronal on 2016-02-02.
- */
-
 public with sharing class ProductController {
 
-    public Map<String, RestController.Product> prodMap {get;set;}
+    public Map<Integer, RestController.Product> prodMap {get;set;}
     public RestController.Product prod {get;set;}
-    public Map<String, RestController.Category> catMap {get;set;}
-    public Map<String, RestController.Order> orderMap {get;set;}
-    public RestController.Order order {get;set;}
+    public Map<Integer, RestController.Category> catMap {get;set;}
     public ShoppingCart cart {get;set;}
     public Integer quantityOrder {get;set;}
-    public String productId;
+    public Integer productId;
 
     public ProductController() {
         cart = new ShoppingCart();
         catMap = RestController.getCategories();
         prodMap = RestController.getProducts();
-        productId = ApexPages.currentPage().getParameters().get('productId');
+        if (ApexPages.currentPage().getParameters().get('productId') != null) {
+            productId = Integer.valueOf(ApexPages.currentPage().getParameters().get('productId'));
+        }
         if (productId != null) {
             prod = RestController.getProduct(productId);
             System.debug(prod);
@@ -29,9 +25,7 @@ public with sharing class ProductController {
     }
 
     public PageReference addToCart() {
-        System.debug('quantityOrder '+quantityOrder);
-        System.debug('productId '+productId);
-        cart.add(Decimal.valueOf(productId), (Decimal)quantityOrder);
+        cart.add(productId, (Decimal)quantityOrder);
         return null;
     }
 
@@ -39,6 +33,4 @@ public with sharing class ProductController {
         cart.deleteCart();
         return null;
     }
-
-
 }

@@ -1,0 +1,65 @@
+<!--
+ - Created by koronal on 2016-02-06.
+ -->
+
+<apex:page id="OrderView" controller="OrderController">
+    <apex:pageBlock >
+        <apex:pageBlockTable value="{!poList}" var="po">
+            <apex:column headerValue="Id">
+                <apex:outputText value="{!po.Id}" />
+            </apex:column>
+            <apex:column headerValue="Id">
+                <apex:outputText value="{!po.Owner.FirstName}" />
+            </apex:column>
+            <apex:column headerValue="Id">
+                <apex:outputText value="{!po.Owner.LastName}" />
+            </apex:column>
+            <apex:column headerValue="Ext Id">
+                <apex:outputText value="{!po.Order_ext_id__c}" />
+            </apex:column>
+            <apex:column headerValue="Status">
+                <apex:outputText value="{!po.Status__c}" />
+            </apex:column>
+            <apex:column headerValue="Total price">
+                <apex:outputText value="{!po.Total_Price__c}" />
+            </apex:column>
+            <apex:column headerValue="Action">
+                <apex:form>
+                    <apex:commandButton value="check status" action="{!checkStatus}" reRender="orderRest">
+                        <apex:param name="poId" value="{!po.Order_ext_id__c}" assignTo="{!poId}" />
+                    </apex:commandButton>
+                </apex:form>
+
+            </apex:column>
+
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+    <apex:pageBlock title="Order Details REST response"  id="orderRest" >
+        <apex:pageBlockSection rendered="{! poId != null}">
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Id" />
+                <apex:outputText value="{!order.id}" />
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="status" />
+                <apex:outputText value="{!order.status}" />
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Tracking COde" />
+                <apex:outputText value="{!order.tracking_code}" />
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="TImestamp" />
+                <apex:outputText value="{!order.timestamp}" />
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Total Price" />
+                <apex:outputText value="{!order.total_price}" />
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="User Id" />
+                <apex:outputText value="{!order.user_id}" />
+            </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+</apex:page>
