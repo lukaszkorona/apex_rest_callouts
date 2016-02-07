@@ -1,7 +1,3 @@
-/**
- * Created by koronal on 2016-02-01.
- */
-
 public with sharing class RestController {
 
     public static final String SERVICE_URL = 'http://178.62.161.194:8082';
@@ -12,11 +8,18 @@ public with sharing class RestController {
     public static final String POST_METHOD = 'POST';
     public static final String CONTENT_TYPE = 'Content-Type';
     public static final String JSON_CONTENT = 'application/json';
-    private static String username = 'user7';
-    private static String passsword = '3T5erA49';
+    private static String username ;
+    private static String passsword ;
 
 
     public RestController(){}
+
+    static {
+        List<ebayapi__c> creds = ebayapi__c.getAll().values();
+        username = creds[0].username__c;
+        passsword = creds[0].passsword__c;
+
+    }
 
     public static Map<Integer, RestController.Product> getProducts() {
         try {
@@ -40,7 +43,6 @@ public with sharing class RestController {
             RestControllerContext ctx = new RestControllerContext(RestController.GET_METHOD, RestController.PRODUCT_ENDPOINT + Id);
             String restResponse = ctx.send();
             RestController.Product product = (RestController.Product)JSON.deserialize(restResponse, RestController.Product.class);
-            System.debug('product '+product.id);
             return product;
         }catch(Exception e) {
             System.debug(e);
@@ -81,9 +83,7 @@ public with sharing class RestController {
         try {
             RestControllerContext ctx = new RestControllerContext(ord);
             String restResponse = ctx.send();
-            System.debug('rest response send() '+restResponse);
             OrderResponse order = (OrderResponse)JSON.deserialize(restResponse, RestController.OrderResponse.class);
-            System.debug('order '+order);
             return order;
         }catch(Exception e) {
             System.debug(e);

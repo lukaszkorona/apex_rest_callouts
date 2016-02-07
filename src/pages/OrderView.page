@@ -1,7 +1,3 @@
-<!--
- - Created by koronal on 2016-02-06.
- -->
-
 <apex:page id="OrderView" controller="OrderController">
     <apex:pageBlock >
         <apex:pageBlockTable value="{!poList}" var="po">
@@ -22,6 +18,9 @@
             </apex:column>
             <apex:column headerValue="Total price">
                 <apex:outputText value="{!po.Total_Price__c}" />
+            </apex:column>
+            <apex:column headerValue="Date">
+                <apex:outputText value="{!po.LastModifiedDate}" />
             </apex:column>
             <apex:column headerValue="Action">
                 <apex:form>
