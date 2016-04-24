@@ -59,7 +59,7 @@
                 <apex:outputLabel for="productPrice" value="Price"/>
                 <apex:outputText value="{!prod.price}" id="productPrice"/>
             </apex:pageBlockSectionItem>
-            <apex:form >
+            <apex:form>
                 <apex:inputText value="{!quantityOrder}" />
                 <apex:commandButton action="{!addToCart}" value="Add to cart"/>
             </apex:form>

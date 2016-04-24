@@ -23,7 +23,7 @@
                 <apex:outputText value="{!po.LastModifiedDate}" />
             </apex:column>
             <apex:column headerValue="Action">
-                <apex:form >
+                <apex:form>
                     <apex:commandButton value="check status" action="{!checkStatus}" reRender="orderRest">
                         <apex:param name="poId" value="{!po.Order_ext_id__c}" assignTo="{!poId}" />
                     </apex:commandButton>
