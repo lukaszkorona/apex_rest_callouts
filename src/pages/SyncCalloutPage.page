@@ -1,0 +1,12 @@
+<apex:page id="SyncCalloutPage" controller="SyncCalloutPageController">
+    <apex:pageMessages id="results"/>
+    <apex:form >
+        <apex:pageBlock title="Sync Callout Page">
+            <p>
+                Enter the duration of the service call:
+            </p>
+            <apex:inputText id="duration" value="{!duration}" />
+            <apex:commandButton action="{!submit}" value="submit" title="Submit" />
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
